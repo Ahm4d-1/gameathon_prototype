@@ -6,9 +6,23 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+<img id="screenshot">
+<div id="options" >
+  <button onclick="simulate()">Simulate</button>
+  <!-- <button onclick="simulate()">Simulate</button> -->
+  <button onclick="restart()">Restart</button>
+</div>
+
+<script src="panZoomImage.js"></script>
+<script src="brettel_colorblind_simulation.js"></script>
+<!-- <script src="hcirn_colorblind_simulation.js"></script> -->
+<!-- <script src="machado_colorblind_simulation.js"></script> -->
+<script src="colorblind.js"></script>
 <script>
+const imgHolder = document.querySelector('#screenshot');
 const canvas = document.querySelector('#draw');
 const ctx = canvas.getContext('2d');
+let currentImage;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.strokeStyle = '#BADA55';
@@ -18,14 +32,15 @@ ctx.lineWidth = 100;
 // ctx.globalCompositeOperation = 'multiply';
 
 let isDrawing = false;
+let isSimulating = false; // stop drawing when simulating
 let lastX = 0;
 let lastY = 0;
 let hue = 0;
 let direction = true;
 
 function draw(e) {
-  if (!isDrawing) return; // stop the fn from running when they are not moused down
-  console.log(e);
+  if (!isDrawing || isSimulating) return; // stop the fn from running when they are not moused down
+//   console.log(e);
   ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
   ctx.beginPath();
   // start from
@@ -50,9 +65,29 @@ function draw(e) {
   }
 
 }
+// document.getElementById('imageLink').style.display = type === "Normal" ? "none" : "inline";
+// document.getElementById('imageLink').style.display = "inline";
 
+function simulate() {
+    isSimulating = true;
+    const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    // window.location.href = image;
+    console.log(typeof image);
+    console.log(image);
+    canvas.style.display = 'none';
+    imgHolder.style.display = 'block';
+    imgHolder.src = image;
+}
+
+function restart() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.style.display = 'block';
+    imgHolder.style.display = 'none';
+    isSimulating = false;
+}
 
 canvas.addEventListener('mousedown', (e) => {
+  if (isSimulating) return;
   isDrawing = true;
   [lastX, lastY] = [e.offsetX, e.offsetY];
 });
@@ -66,9 +101,33 @@ canvas.addEventListener('mouseout', () => isDrawing = false);
 
 <style>
   html, body {
+    display: flex;
+    flex-direction: column;
     margin: 0;
   }
 
+  img {
+    display: none;
+    height: 80vh;
+  }
+
+  canvas {
+    height: 80vh;
+  }
+
+  button {
+    font-size: 24px;
+  }
+
+  #options {
+    display: flex;
+    flex-direction: column;
+    height: 20vh; 
+    background: black;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
 </style>
 
 </body>
