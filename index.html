@@ -7,10 +7,24 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <img id="screenshot">
-<div id="options" >
+<div id="footer" >
+  <div class="splitter">
   <button onclick="simulate()">Simulate</button>
   <!-- <button onclick="simulate()">Simulate</button> -->
   <button onclick="restart()">Restart</button>
+  </div>
+  <div class="splitter">
+    <div class="inputs">
+    <label><input type="radio" name="colorblindType" value="Normal" checked />Normal</label>
+    <label><input type="radio" name="colorblindType" value="Protanopia" />Protanopia</label>
+    <label><input type="radio" name="colorblindType" value="Protanomaly" />Protanomaly</label>
+    <label><input type="radio" name="colorblindType" value="Deuteranopia" />Deuteranopia</label>
+    <label><input type="radio" name="colorblindType" value="Deuteranomaly" />Deuteranomaly</label>
+    <label><input type="radio" name="colorblindType" value="Tritanopia" />Tritanopia</label>
+    <label><input type="radio" name="colorblindType" value="Tritanomaly" />Tritanomaly</label>
+    <label><input type="radio" name="colorblindType" value="Achromatopsia" />Achromatopsia</label>
+    </div>
+  </div>
 </div>
 
 <script src="panZoomImage.js"></script>
@@ -19,6 +33,7 @@
 <!-- <script src="machado_colorblind_simulation.js"></script> -->
 <script src="colorblind.js"></script>
 <script>
+const inputsHolder = document.querySelector('.inputs');
 const imgHolder = document.querySelector('#screenshot');
 const canvas = document.querySelector('#draw');
 const ctx = canvas.getContext('2d');
@@ -76,6 +91,7 @@ function simulate() {
     console.log(image);
     canvas.style.display = 'none';
     imgHolder.style.display = 'block';
+    inputsHolder.style.display = 'flex';
     imgHolder.src = image;
 }
 
@@ -119,14 +135,24 @@ canvas.addEventListener('mouseout', () => isDrawing = false);
     font-size: 24px;
   }
 
-  #options {
+  #footer {
     display: flex;
-    flex-direction: column;
     height: 20vh; 
     background: black;
-    justify-content: center;
+    color: #fff;
+    justify-content: space-around;
     align-items: center;
+  }
+
+  .splitter {
+    display: flex;
+    flex-direction: column;
     gap: 5px;
+  }
+
+  .inputs {
+    display: none;
+    flex-direction: column;
   }
 </style>
 
