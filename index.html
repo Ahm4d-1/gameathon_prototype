@@ -6,6 +6,7 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+<canvas id="outCanvas" width="800" height="800"></canvas>
 <img id="screenshot">
 <div id="footer" >
   <div class="splitter">
@@ -29,13 +30,12 @@
 
 <script src="panZoomImage.js"></script>
 <script src="brettel_colorblind_simulation.js"></script>
-<!-- <script src="hcirn_colorblind_simulation.js"></script> -->
-<!-- <script src="machado_colorblind_simulation.js"></script> -->
 <script src="colorblind.js"></script>
 <script>
 const inputsHolder = document.querySelector('.inputs');
 const imgHolder = document.querySelector('#screenshot');
 const canvas = document.querySelector('#draw');
+const outCanvas = document.querySelector('#outCanvas');
 const ctx = canvas.getContext('2d');
 let currentImage;
 canvas.width = window.innerWidth;
@@ -85,20 +85,22 @@ function draw(e) {
 
 function simulate() {
     isSimulating = true;
-    const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-    // window.location.href = image;
-    console.log(typeof image);
-    console.log(image);
+    const image = canvas.toDataURL("image/png");
     canvas.style.display = 'none';
-    imgHolder.style.display = 'block';
+    outCanvas.style.display = 'block';
     inputsHolder.style.display = 'flex';
     imgHolder.src = image;
+    setTimeout(function () {
+        getFilteredImage(imgHolder, ('brett'+type), function (filteredImage, url) {
+            panZoomImage.displayImage(filteredImage);
+        });
+    }, 0);
 }
 
 function restart() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    outCanvas.style.display = 'none';
     canvas.style.display = 'block';
-    imgHolder.style.display = 'none';
     isSimulating = false;
 }
 
@@ -127,8 +129,13 @@ canvas.addEventListener('mouseout', () => isDrawing = false);
     height: 80vh;
   }
 
-  canvas {
-    height: 100vh;
+  #draw {
+    min-height: 100vh;
+  }
+
+  #outCanvas {
+    min-height: 100vh;
+    display: none;
   }
 
   button {
