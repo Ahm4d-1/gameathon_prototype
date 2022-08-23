@@ -141,7 +141,7 @@ function createFilteredImage(img, type, callback) {
             filteredImage.onload = function () {
                 callback(this, url);
             };
-            // filteredImage.src = url;
+            filteredImage.src = url;
         }
     }, 0);
 
