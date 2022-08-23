@@ -1,8 +1,8 @@
 // Inspired by http://phrogz.net/tmp/canvas_zoom_to_cursor.html
-panZoomImage = {canvas: document.getElementById('outCanvas'),
+panZoomImage = {outCanvas: document.getElementById('outCanvas'),
     lastX: 0, lastY: 0, translateX: 0, translateY: 0, scale: 1.0, dragged: false, lens: 0};
 panZoomImage.displayImage = function displayImage(img) {
-    this.ctx = this.canvas.getContext('2d');
+    this.ctx = this.outCanvas.getContext('2d');
     this.currentImage = img;
     this.onresize();
     this.redraw();
@@ -13,11 +13,11 @@ panZoomImage.setHiddenLensImage = function setHiddenLensImage(img) {
 };
 panZoomImage.onresize = function () {
     // Fill whole window canvas: http://stackoverflow.com/a/10215724/2256700
-    this.canvas.style.width  = '100%';
-    this.canvas.style.height = '100%';
+    this.outCanvas.style.width  = '100%';
+    this.outCanvas.style.height = '100%';
     // ...then set the internal size to match
-    this.canvas.width  = this.canvas.offsetWidth;
-    this.canvas.height = this.canvas.offsetHeight;
+    this.outCanvas.width  = this.outCanvas.offsetWidth;
+    this.outCanvas.height = this.outCanvas.offsetHeight;
     this.redraw();
 };
 window.addEventListener('resize', function () {
@@ -84,20 +84,20 @@ panZoomImage.drawLens = function drawLens() {
 };
 panZoomImage.redraw = function redraw() {
     if (this.currentImage) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.outCanvas.width, this.outCanvas.height);
         this.drawImageAndLens();
     }
 };
-// panZoomImage.canvas.addEventListener('mousedown', function (evt) {
+// panZoomImage.outCanvas.addEventListener('mousedown', function (evt) {
 //     document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-//     panZoomImage.lastX = evt.offsetX || (evt.pageX - panZoomImage.canvas.offsetLeft);
-//     panZoomImage.lastY = evt.offsetY || (evt.pageY - panZoomImage.canvas.offsetTop);
+//     panZoomImage.lastX = evt.offsetX || (evt.pageX - panZoomImage.outCanvas.offsetLeft);
+//     panZoomImage.lastY = evt.offsetY || (evt.pageY - panZoomImage.outCanvas.offsetTop);
 //     panZoomImage.dragStart = {x: panZoomImage.lastX, y: panZoomImage.lastY};
 //     panZoomImage.dragged = false;
 // }, false);
-// panZoomImage.canvas.addEventListener('mousemove', function (evt) {
-//     var thisX = evt.offsetX || (evt.pageX - panZoomImage.canvas.offsetLeft);
-//     var thisY = evt.offsetY || (evt.pageY - panZoomImage.canvas.offsetTop);
+// panZoomImage.outCanvas.addEventListener('mousemove', function (evt) {
+//     var thisX = evt.offsetX || (evt.pageX - panZoomImage.outCanvas.offsetLeft);
+//     var thisY = evt.offsetY || (evt.pageY - panZoomImage.outCanvas.offsetTop);
 //     panZoomImage.dragged = true;
 //     if (panZoomImage.dragStart) {
 //         panZoomImage.clearImage();
@@ -127,7 +127,7 @@ panZoomImage.zoom = function (clicks) {
     this.translateY += (this.translateY - this.lastY) * (this.scale / oldscale - 1);
     this.drawImageAndLens();
 };
-// panZoomImage.canvas.addEventListener('mouseup', function (evt) {
+// panZoomImage.outCanvas.addEventListener('mouseup', function (evt) {
 //     panZoomImage.dragStart = null;
 //     if (!panZoomImage.dragged) {
 //         panZoomImage.zoom(evt.shiftKey ? -1 : 1);
@@ -141,5 +141,5 @@ var handleScroll = function (evt) {
     }
     return evt.preventDefault() && false;
 };
-// panZoomImage.canvas.addEventListener('DOMMouseScroll', handleScroll, false);
-// panZoomImage.canvas.addEventListener('mousewheel', handleScroll, false);
+// panZoomImage.outCanvas.addEventListener('DOMMouseScroll', handleScroll, false);
+// panZoomImage.outCanvas.addEventListener('mousewheel', handleScroll, false);
