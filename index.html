@@ -9,10 +9,10 @@
 <canvas id="outCanvas" width="800" height="800"></canvas>
 <img id="screenshot">
 <div id="footer" >
-  <div class="splitter">
-  <button onclick="simulate()">Simulate</button>
-  <!-- <button onclick="simulate()">Simulate</button> -->
+  <div class="splitter" style="flex-direction: row; gap: 10px;">
+  <button onclick="triggerWidth()">Fix Width</button>
   <button onclick="restart()">Restart</button>
+  <button style="font-size: 30px; font-weight: 400;" onclick="simulate()">Simulate</button>
   </div>
   <div class="splitter">
     <div class="inputs">
@@ -37,21 +37,23 @@ const imgHolder = document.querySelector('#screenshot');
 const canvas = document.querySelector('#draw');
 const outCanvas = document.querySelector('#outCanvas');
 const ctx = canvas.getContext('2d');
+const radios = document.querySelectorAll('input')
 let currentImage;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.strokeStyle = '#BADA55';
 ctx.lineJoin = 'round';
 ctx.lineCap = 'round';
-ctx.lineWidth = 100;
-// ctx.globalCompositeOperation = 'multiply';
+ctx.lineWidth = 60;
 
 let isDrawing = false;
 let isSimulating = false; // stop drawing when simulating
 let lastX = 0;
 let lastY = 0;
 let hue = 0;
+let isComputing = false;
 let direction = true;
+let fixedWidth = true;
 
 function draw(e) {
   if (!isDrawing || isSimulating) return; // stop the fn from running when they are not moused down
@@ -69,22 +71,23 @@ function draw(e) {
   if (hue >= 360) {
     hue = 0;
   }
-  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
-    direction = !direction;
-  }
+  if (!fixedWidth){
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+      direction = !direction;
+    }
 
-  if(direction) {
-    ctx.lineWidth++;
-  } else {
-    ctx.lineWidth--;
+    if(direction) {
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--;
+    }
   }
-
 }
-// document.getElementById('imageLink').style.display = type === "Normal" ? "none" : "inline";
-// document.getElementById('imageLink').style.display = "inline";
 
-function simulate() {
+function simulate(type) {
     isSimulating = true;
+    isComputing = true;
+    if (!type) type = 'Normal'; // handle first Simulate
     const image = canvas.toDataURL("image/png");
     canvas.style.display = 'none';
     outCanvas.style.display = 'block';
@@ -95,6 +98,7 @@ function simulate() {
             panZoomImage.displayImage(filteredImage);
         });
     }, 0);
+    isComputing = false;
 }
 
 function restart() {
@@ -102,6 +106,17 @@ function restart() {
     outCanvas.style.display = 'none';
     canvas.style.display = 'block';
     isSimulating = false;
+}
+
+function triggerWidth() {
+  fixedWidth = !fixedWidth;
+}
+
+function handleRadio(e) {
+  if (isComputing) reutrn; // return if colorblind image is being computed
+  console.log(e);
+  console.log(e.target.defaultValue);
+  simulate(e.target.defaultValue);
 }
 
 canvas.addEventListener('mousedown', (e) => {
@@ -114,6 +129,7 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mouseup', () => isDrawing = false);
 canvas.addEventListener('mouseout', () => isDrawing = false);
+radios.forEach(radio => radio.addEventListener('change', handleRadio));
 
 </script>
 
@@ -139,7 +155,7 @@ canvas.addEventListener('mouseout', () => isDrawing = false);
   }
 
   button {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   #footer {
