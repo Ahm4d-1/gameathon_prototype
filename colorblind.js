@@ -82,6 +82,7 @@ function clearImageCache() {
 
 function getFilteredImage(img, type, callback) {
     console.log('getFilteredImage');
+    if (type === 'brettundefined') return;
     if (type in imageCache) {
         callback(imageCache[type], urlCache[type]);
     } else {
@@ -136,7 +137,7 @@ function createFilteredImage(img, type, callback) {
             // Work is done
             ctx.putImageData(pixels, 0, 0);
             var url = canvas.toDataURL();
-            console.log(url);
+            // console.log(url);
             var filteredImage = new Image();
             filteredImage.onload = function () {
                 callback(this, url);

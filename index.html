@@ -10,7 +10,7 @@
 <img id="screenshot">
 <div id="footer" >
   <div class="splitter" style="flex-direction: row; gap: 10px;">
-  <button onclick="triggerWidth()">Fix Width</button>
+  <button onclick="triggerWidth()">Trigger Width</button>
   <button onclick="restart()">Restart</button>
   <button style="font-size: 30px; font-weight: 400;" onclick="simulate()">Simulate</button>
   </div>
@@ -87,14 +87,18 @@ function draw(e) {
 function simulate(type) {
     isSimulating = true;
     isComputing = true;
-    if (!type) type = 'Normal'; // handle first Simulate
+    if (!type) {
+      if (inputsHolder.style.display === '') type = 'Normal'; // handle first Simulate
+    }
+    type = 'brett' + type;
+    console.log(type);
     const image = canvas.toDataURL("image/png");
     canvas.style.display = 'none';
     outCanvas.style.display = 'block';
     inputsHolder.style.display = 'flex';
     imgHolder.src = image;
     setTimeout(function () {
-        getFilteredImage(imgHolder, ('brett'+type), function (filteredImage, url) {
+        getFilteredImage(imgHolder, type, function (filteredImage, url) {
             panZoomImage.displayImage(filteredImage);
         });
     }, 0);
