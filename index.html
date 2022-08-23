@@ -102,6 +102,7 @@ function simulate(type) {
 }
 
 function restart() {
+    window.location.reload(false);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     outCanvas.style.display = 'none';
     canvas.style.display = 'block';
